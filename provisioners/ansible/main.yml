@@ -1,0 +1,11 @@
+- hosts: all
+  remote_user: "{{ user_name }}"
+  gather_facts: no
+  roles:
+    - essential
+
+- hosts: web
+  remote_user: "{{ user_name }}"
+  gather_facts: no
+  roles:
+    - web

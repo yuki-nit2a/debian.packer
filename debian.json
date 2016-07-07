@@ -1,0 +1,116 @@
+{
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "format": "ovf",
+      "guest_os_type": "{{ user `guest_os_type` }}",
+      "iso_interface": "sata",
+      "iso_url": "{{ user `iso_url` }}",
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "output_directory": "packed/",
+
+      "disk_size": 32768,
+      "hard_drive_interface": "sata",
+
+      "headless": false,
+      "vboxmanage": [
+        ["modifyvm", "{{ .Name }}", "--cpus", "1"],
+        ["modifyvm", "{{ .Name }}", "--pae", "on"],
+        ["modifyvm", "{{ .Name }}", "--memory", "512"],
+        ["modifyvm", "{{ .Name }}", "--vram", "32"],
+        ["modifyvm", "{{ .Name }}", "--hwvirtex", "on"],
+        ["modifyvm", "{{ .Name }}", "--chipset", "piix3"],
+        ["modifyvm", "{{ .Name }}", "--rtcuseutc", "on"],
+        ["modifyvm", "{{ .Name }}", "--firmware", "bios"],
+        ["modifyvm", "{{ .Name }}", "--keyboard", "ps2"],
+        ["modifyvm", "{{ .Name }}", "--mouse", "ps2"],
+        ["modifyvm", "{{ .Name }}", "--audio", "none"],
+        ["modifyvm", "{{ .Name }}", "--clipboard", "disabled"],
+        ["modifyvm", "{{ .Name }}", "--draganddrop", "disabled"],
+        ["modifyvm", "{{ .Name }}", "--usb", "on"],
+        ["modifyvm", "{{ .Name }}", "--usbehci", "on"],
+        ["modifyvm", "{{ .Name }}", "--usbxhci", "on"],
+
+        ["setextradata", "global", "GUI/SuppressMessages", "confirmInputCapture,remindAboutAutoCapture,remindAboutMouseIntegration,remindAboutWrongColorDepth"],
+
+        ["setextradata", "{{ .Name }}", "VBoxInternal2/SharedFoldersEnableSymlinksCreate/www", "1"]
+      ],
+
+      "http_directory": "http/",
+      "http_port_min": 8000,
+      "http_port_max": 9000,
+
+      "boot_wait": "5s",
+      "boot_command": [
+        "<esc><wait>",
+
+        "install ",
+        "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+        "auto ",
+
+        "locale=en_US.UTF-8 ",
+        "language=ja ",
+        "country=JP ",
+
+        "kbd-chooser/method=ja ",
+        "keymap=jp ",
+        "console-setup/ask_detect=false",
+        "console-keymaps-at/keymap=jp ",
+
+        "hostname={{ .Name }} ",
+        "domain=localhost ",
+
+        "<enter>"
+      ],
+
+      "export_opts": [],
+      "guest_additions_mode": "upload",
+      "vboxmanage_post": [],
+      "vrdp_port_min": 5900,
+      "vrdp_port_min": 6000,
+
+      "ssh_port": 22,
+      "ssh_host_port_min": 62222,
+      "ssh_host_port_max": 64444,
+      "ssh_skip_nat_mapping": false,
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_wait_timeout": "72h",
+
+      "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
+      "shutdown_timeout": "5m"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "environment_vars": [],
+      "execute_command": "echo 'vagrant' | sudo -S sh '{{ .Path }}'",
+      "remote_folder": "/tmp/",
+      "scripts": [
+        "provisioners/ansible.sh"
+      ],
+      "binary": false,
+      "skip_clean": false,
+      "start_retry_timeout": "5m"
+    },
+    {
+      "type": "ansible-local",
+      "playbook_file": "provisioners/ansible/main.yml"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "only": ["virtualbox-iso"],
+      "include": [],
+      "compression_level": 6,
+      "override": {},
+      "output": "./packed/debian.box",
+      "vagrantfile_template": "vagrant/Vagrantfile",
+      "keep_input_artifact": true
+    }
+  ]
+}
+

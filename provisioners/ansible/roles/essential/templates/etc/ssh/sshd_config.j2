@@ -1,0 +1,43 @@
+Port {{ ssh_port }}
+Protocol 2
+UsePrivilegeSeparation yes
+
+ListenAddress 0.0.0.0
+Banner /etc/issue.net
+LoginGraceTime 15
+
+ServerKeyBits 4096
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_dsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+KeyRegenerationInterval 600
+
+IgnoreUserKnownHosts yes
+IgnoreRhosts yes
+RhostsRSAAuthentication no
+HostbasedAuthentication no
+PermitRootLogin no
+UsePAM no
+ChallengeResponseAuthentication no
+GSSAPIAuthentication no
+KerberosAuthentication no
+PasswordAuthentication yes
+PermitEmptyPasswords no
+RSAAuthentication no
+PubkeyAuthentication yes
+AuthorizedKeysFile %h/.ssh/authorized_keys
+AllowUsers {{ user_name }}
+StrictModes yes
+
+TCPKeepAlive yes
+X11Forwarding no
+X11DisplayOffset 10
+UseLogin no
+
+PrintMotd yes
+PrintLastLog yes
+
+AcceptEnv LANG LC_*
+
+SyslogFacility AUTH
+LogLevel INFO

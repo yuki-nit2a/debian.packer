@@ -1,0 +1,6 @@
+- include: configurate_apt.yml
+- include: purge_needless-packages.yml
+- include: install_standard-system-utilities.yml
+- include: install_editors.yml
+- include: configurate_openssh-server.yml
+- include: deploy_dotfiles.yml

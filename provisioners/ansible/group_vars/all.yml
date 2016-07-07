@@ -1,0 +1,6 @@
+user_name: yuki
+user_pass: password
+
+ssh_port: 12346
+
+dotfiles_repo: git://github.com/golang/example.git

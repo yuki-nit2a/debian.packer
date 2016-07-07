@@ -1,0 +1,10 @@
+- git:
+    repo: "{{ dotfiles_repo }}"
+    dest: /tmp/dotfiles
+    clone: yes
+    version: HEAD
+
+- copy:
+    src: /tmp/dotfiles/*
+    dest: ~/
+    mode: 0600
