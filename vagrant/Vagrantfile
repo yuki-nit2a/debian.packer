@@ -1,4 +1,4 @@
-Vagrant.require_version '>= 1.8.1'
+Vagrant.require_version '>= 1.9.2'
 
 Vagrant.configure(2) do |config|
   config.vm.box = 'debian'
@@ -17,13 +17,6 @@ Vagrant.configure(2) do |config|
   config.vm.boot_timeout = 300
   config.vm.graceful_halt_timeout = 600
   config.vm.post_up_message = 'Vagrant is upped'
-
-  config.vm.provision 'ansible_local' do |ansible|
-    ansible.playbook = 'playbook.yml'
-    ansible.verbose = true
-    ansible.install = true
-    ansible.limit = 'all'
-  end
 
   config.vm.synced_folder 'www/', '/mnt/www/', :mount_options => ['dmode=777', 'fmode=666']
 end

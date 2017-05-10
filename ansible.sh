@@ -26,3 +26,4 @@ EOF
 
 apt-get update -y
 apt-get install -y -t unstable ansible
+mkdir -p $PACKER__ANSIBLE_STAGING_DIR

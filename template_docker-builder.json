@@ -1,0 +1,42 @@
+{
+  "builders": [
+    {
+      "type": "virtualbox-ovf",
+      "source_path": "packed-ansible/debian.ovf",
+      "format": "ovf",
+      "headless": false,
+      "ssh_username": "{{ user `username` }}",
+      "ssh_password": "{{ user `password` }}"
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "remote_folder": "{{ user `shell-staging-dir` }}",
+      "scripts": "provisioners/ansible.sh",
+      "execute_command": "echo '{{ user `username` }}' | sudo -S sh '{{ .Path }}'",
+      "environment_vars": [
+        "PACKER__ANSIBLE_STAGING_DIR={{ user `ansible-staging-dir` }}"
+      ]
+    },
+
+    {
+      "type": "file",
+      "source": "provisioners/ansible",
+      "destination": "{{ user `ansible-staging-dir` }}"
+    },
+
+    {
+      "type": "ansible-local",
+      "playbook_file": "provisioners/ansible/main.yml",
+      "staging_directory": "{{ user `ansible-staging-dir` }}"
+    }
+  ],
+
+  "post-processors": [
+    {
+    }
+  ]
+}
+

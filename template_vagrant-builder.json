@@ -1,4 +1,9 @@
 {
+  "variables": {
+    "username": "vagrant",
+    "password": "vagrant"
+  },
+
   "builders": [
     {
       "type": "virtualbox-iso",
@@ -8,7 +13,7 @@
       "iso_url": "{{ user `iso_url` }}",
       "iso_checksum_type": "{{ user `iso_checksum_type` }}",
       "iso_checksum": "{{ user `iso_checksum` }}",
-      "output_directory": "packed/",
+      "output_directory": "packed_vagrant/",
 
       "disk_size": 32768,
       "hard_drive_interface": "sata",
@@ -38,8 +43,8 @@
       ],
 
       "http_directory": "http/",
-      "http_port_min": 8000,
-      "http_port_max": 9000,
+      "http_port_min": 8221,
+      "http_port_max": 8221,
 
       "boot_wait": "5s",
       "boot_command": [
@@ -74,32 +79,24 @@
       "ssh_host_port_min": 62222,
       "ssh_host_port_max": 64444,
       "ssh_skip_nat_mapping": false,
-      "ssh_username": "vagrant",
-      "ssh_password": "vagrant",
+      "ssh_username": "{{ user `username` }}",
+      "ssh_password": "{{ user `password` }}",
       "ssh_wait_timeout": "72h",
 
-      "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
+      "shutdown_command": "echo '{{ user `username` }}' | sudo -S shutdown -P now",
       "shutdown_timeout": "5m"
     }
   ],
+
   "provisioners": [
     {
       "type": "shell",
-      "environment_vars": [],
-      "execute_command": "echo 'vagrant' | sudo -S sh '{{ .Path }}'",
-      "remote_folder": "/tmp/",
-      "scripts": [
-        "provisioners/ansible.sh"
-      ],
-      "binary": false,
-      "skip_clean": false,
-      "start_retry_timeout": "5m"
-    },
-    {
-      "type": "ansible-local",
-      "playbook_file": "provisioners/ansible/main.yml"
+      "remote_folder": "{{ user `shell-staging-dir` }}",
+      "scripts": "provisioners/vagrant.sh",
+      "execute_command": "echo '{{ user `username` }}' | sudo -S sh '{{ .Path }}'"
     }
   ],
+
   "post-processors": [
     {
       "type": "vagrant",
@@ -107,10 +104,9 @@
       "include": [],
       "compression_level": 6,
       "override": {},
-      "output": "./packed/debian.box",
+      "output": "./packed_vagrant/vagrant.box",
       "vagrantfile_template": "vagrant/Vagrantfile",
       "keep_input_artifact": true
     }
   ]
 }
-

@@ -1,0 +1,6 @@
+{
+  "guest_os_type": "Debian_64",
+  "iso_url": "http://cdimage.debian.org/debian-cd/current/multi-arch/iso-cd/debian-8.7.1-amd64-i386-netinst.iso",
+  "iso_checksum_type": "sha512",
+  "iso_checksum": "bf0509be366531761c711ad57b6de831eec57ec526f1ea1b3574fe8f07d3f965aeda91bcfbc552b1680f4535657867f12c8e54c6236a8cf7b76b948f2855d692"
+}
